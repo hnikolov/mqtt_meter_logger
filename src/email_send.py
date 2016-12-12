@@ -54,4 +54,6 @@ if __name__ == '__main__':
         
     # Send e-mail
     email_send( str(day_history) )
+    
+    # TODO: Create a class; Use simplejson
 
