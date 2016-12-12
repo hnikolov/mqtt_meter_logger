@@ -15,7 +15,7 @@ def email_send( msg_content ):
     
     # Settings
     FROM = 'h_nikolov@mail.ru'
-    PSWD = 'Buba'
+    PSWD = 'Password'
     TO   = FROM
 #    TO   = 'h.n.nikolov@gmail.com'    
     
