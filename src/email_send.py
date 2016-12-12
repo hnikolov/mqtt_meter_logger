@@ -4,8 +4,14 @@ from email.mime.text import MIMEText
 from collections import OrderedDict
 import simplejson
 
+from datetime import date, timedelta
+
 #def emailResults(folder, filename):
 def email_send( msg_content ):
+
+    yesterday = date.today() - timedelta(1)
+#    print yesterday.strftime('%d-%m-%y')
+#    print yesterday
 
     # Mesage body
 #    doc = folder + filename + '.txt'
@@ -34,7 +40,7 @@ def email_send( msg_content ):
     # Headers
     msg['To']      = TO
     msg['From']    = FROM
-    msg['Subject'] = 'Test e-mail'
+    msg['Subject'] = 'Home MQTT Logger, ' + str(yesterday)
 
 #    print msg
     
@@ -63,11 +69,9 @@ if __name__ == '__main__':
         topic = "power_meter/processed/" + str(i)
         current_hour = { 'T': i, 'E': i, 'W': i, 'G': i }
         day_history[topic] = current_hour
-        
-#    print simplejson.dumps(day_history)
     
     # Send e-mail
-    email_send( str(day_history) )
+    email_send( simplejson.dumps(day_history) )
     
     # TODO: Create a class; Use simplejson
 
