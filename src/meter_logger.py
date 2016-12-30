@@ -4,6 +4,9 @@ from mqttconnection import MQTTConnection
 import datetime, sys
 import time, schedule
 
+import email_send as em
+import simplejson
+
 
 class MeterLogger():
     """ Collect data via mqtt, re-publish processed data, log data to files """
@@ -35,7 +38,7 @@ class MeterLogger():
         self.hour = time.localtime().tm_hour
         
         # MQTT connection
-        self.mqtt_client = MQTTConnection( client_id     = "power_meter_logger"
+        self.mqtt_client = MQTTConnection( client_id     = "power_meter_logger_debug"
                                          , clean_session = False
                                          , userdata      = None
                                          , protocol      = "MQTTv311"
@@ -167,7 +170,7 @@ class MeterLogger():
         self.current_day  = { 'T': self.day_temperature, 'E': round(self.day_electricity, 3), 'W': self.day_water, 'G': self.day_gas }
         payload           = str(self.current_day)
         self.mqtt_client.publish(topic, payload, self.QoS, self.retain)
-        
+                
 #        print payload
 #        print "---------------------------------------------"
 
@@ -195,6 +198,10 @@ class MeterLogger():
 
             self.mqtt_client.publish("power_meter/processed/water", self.day_water, self.QoS, self.retain)
             self.mqtt_client.publish("power_meter/processed/gas",   self.day_gas,   self.QoS, self.retain)
+            
+            email_dict = self.day_history
+            email_dict["today"] = self.current_day
+            em.email_send(simplejson.dumps( email_dict ))
 
         
     def job_mqtt_connect(self):
